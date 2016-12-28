@@ -19,7 +19,7 @@ object DownloadAsynk {
     private val BUFFER = 1024
     private val MILLISECONDS_THREAD_SLEEP  = 100
     private val MILLISECOND_THREAD_SLEEP_TASK_RESOLVED = 25
-    private var queue: ConcurrentLinkedQueue<Pair<CompletableFuture<File>,Map.Entry<String, String>>>? = null
+    private var queue: ConcurrentLinkedQueue<Pair<CompletableFuture<File>,Pair<String, String>>>? = null
 
     val cachedLazyPool by lazy { Executors.newCachedThreadPool() }
 
@@ -65,16 +65,16 @@ object DownloadAsynk {
 
     }
 
-    fun submit(elem: Map.Entry<String,String>): CompletableFuture<File> {
+    fun submit(pair: Pair<String,String>): CompletableFuture<File> {
         val completableFuture = CompletableFuture<File>()
-        var pair = Pair(completableFuture,elem)
+        var pair = Pair(completableFuture,pair)
         queue?.add(pair)
         return completableFuture
     }
 
-    fun submit(map: Map<String, String>): List<CompletableFuture<File>> {
+    fun submit(vararg pairs : Pair<String, String>): List<CompletableFuture<File>> {
         val listCompletable = ArrayList<CompletableFuture<File>>()
-        for(it in map.entries){
+        for(it in pairs){
             val res = submit(it)
             listCompletable.add(res)
         }
@@ -83,13 +83,13 @@ object DownloadAsynk {
     }
 
 
-    private fun processSingleAttachment(map: Map.Entry<String,String> ) =  CompletableFuture.supplyAsync(Supplier { execute(map) } ,cachedLazyPool)
+    private fun processSingleAttachment(map: Pair<String,String> ) =  CompletableFuture.supplyAsync(Supplier { execute(map) } ,cachedLazyPool)
 
 
-    fun execute(map: Map.Entry<String, String>): File {
-        System.out.println("Downloading Resource " + map.key)
-        val `in` = BufferedInputStream(URL(map.key).openStream())
-        val fos = FileOutputStream(map.value)
+    fun execute(pair: Pair<String, String>): File {
+        System.out.println("Downloading Resource " + pair.first)
+        val `in` = BufferedInputStream(URL(pair.first).openStream())
+        val fos = FileOutputStream(pair.second)
         val bout = BufferedOutputStream(fos)
 
         val data = ByteArray(BUFFER)
@@ -98,9 +98,9 @@ object DownloadAsynk {
         bout.close()
         `in`.close()
 
-        System.out.println("Download Resource " + map.value)
+        System.out.println("Download Resource " + pair.second)
 
-        return File(map.value)
+        return File(pair.second)
     }
 
     private fun readFile(`in`: BufferedInputStream, data :ByteArray, bout : BufferedOutputStream) : Int {
