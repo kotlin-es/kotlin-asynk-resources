@@ -8,16 +8,11 @@ import java.util.concurrent.ConcurrentLinkedQueue
 /**
  * Created by vicboma on 26/12/16.
  */
-class DownloadAsynk internal constructor() {
+object DownloadAsynk {
 
-    companion object {
-        private val MILLISECONDS_THREAD_SLEEP  = 100
-        private val MILLISECOND_THREAD_SLEEP_TASK_RESOLVED = 25
-
-        private var queue: ConcurrentLinkedQueue<Map<CompletableFuture<File>, Map.Entry<String,String>>>? = null
-
-        fun create() = DownloadAsynk()
-    }
+    private val MILLISECONDS_THREAD_SLEEP  = 100
+    private val MILLISECOND_THREAD_SLEEP_TASK_RESOLVED = 25
+    private var queue: ConcurrentLinkedQueue<Map<CompletableFuture<File>, Map.Entry<String,String>>>? = null
 
     init {
         queue = ConcurrentLinkedQueue()
