@@ -8,7 +8,7 @@ Project : https://github.com/vicboma1/emulators/tree/master/gameboyclassic
 
 # Api
 
-##  Map<String,String> => { URL, path/file }
+##  Map<String,String>
 
 ```java
     val listCompletable = DownloadAsynk.submit(
@@ -22,7 +22,7 @@ Project : https://github.com/vicboma1/emulators/tree/master/gameboyclassic
     )
 ```
 
-##  MapEntry<String,String> => { URL, path/file }
+##  MapEntry<String,String>
 
 ```java
     val listCompletable = DownloadAsynk.submit(
