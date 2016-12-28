@@ -1,4 +1,4 @@
-# kotlin Asynk Resources
+# Kotlin Asynk Resources
 
 ![](https://travis-ci.org/kotlin-es/kotlin-asynk-resources.svg?branch=master)
 
@@ -26,7 +26,7 @@ Project : https://github.com/vicboma1/emulators/tree/master/gameboyclassic
 ##  MapEntry<String,String>
 
 ```java
-    val listCompletable = DownloadAsynk.submit(
+    val completable = DownloadAsynk.submit(
         MapEntry("https://raw.githubusercontent.com/kotlin-es/kotlin-asynk-resources/master/src/main/resource/SuperMarioLand2-6GoldenCoins(UE)(V1.2)%5B!%5D.zip","Super-Mario-Land-2-6-Golden-Coins.zip")
     )
 ```
