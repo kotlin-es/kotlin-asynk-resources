@@ -25,9 +25,9 @@ class DownloadAsynkTest {
         val listCompletable = DownloadAsynk.submit(
            object : HashMap<String, String>() {
                        init {
-                           put("https://github.com/kotlin-es/kotlin-asynk-resources/blob/master/src/main/resource/AeroStar(J)%5B!%5D.zip", "./src/Aero-Star.zip")
-                           put("https://github.com/kotlin-es/kotlin-asynk-resources/blob/master/src/main/resource/Alien3(J)%5B!%5D.zip", "Alien-3.zip")
-                           put("https://github.com/kotlin-es/kotlin-asynk-resources/blob/master/src/main/resource/SuperMarioLand2-6GoldenCoins(UE)(V1.2)%5B!%5D.zip","Super-Mario-Land-2-6-Golden-Coins.zip")
+                           put("https://raw.githubusercontent.com/kotlin-es/kotlin-asynk-resources/master/src/main/resource/AeroStar(J)%5B!%5D.zip", "./src/Aero-Star.zip")
+                           put("https://raw.githubusercontent.com/kotlin-es/kotlin-asynk-resources/master/src/main/resource/Alien3(J)%5B!%5D.zip", "Alien-3.zip")
+                           put("https://raw.githubusercontent.com/kotlin-es/kotlin-asynk-resources/master/src/main/resource/SuperMarioLand2-6GoldenCoins(UE)(V1.2)%5B!%5D.zip","Super-Mario-Land-2-6-Golden-Coins.zip")
                        }
            }
         )
@@ -56,7 +56,7 @@ class DownloadAsynkTest {
     @org.junit.Test
     fun testSubmit2() {
         val completable = DownloadAsynk.submit(
-                MapEntry("https://github.com/kotlin-es/kotlin-asynk-resources/blob/master/src/main/resource/AeroStar(J)%5B!%5D.zip", "Aero-Star.zip")
+                MapEntry("https://raw.githubusercontent.com/kotlin-es/kotlin-asynk-resources/master/src/main/resource/Alien3(J)%5B!%5D.zip", "Alien-3.zip")
         )
 
 

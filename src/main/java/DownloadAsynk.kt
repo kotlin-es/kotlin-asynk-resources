@@ -1,5 +1,9 @@
 
+import java.io.BufferedInputStream
+import java.io.BufferedOutputStream
 import java.io.File
+import java.io.FileOutputStream
+import java.net.URL
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -10,6 +14,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
  */
 object DownloadAsynk {
 
+    private val BUFFER = 1024
     private val MILLISECONDS_THREAD_SLEEP  = 100
     private val MILLISECOND_THREAD_SLEEP_TASK_RESOLVED = 25
     private var queue: ConcurrentLinkedQueue<Map<CompletableFuture<File>, Map.Entry<String,String>>>? = null
@@ -80,6 +85,36 @@ object DownloadAsynk {
     }
 
 
-    private fun processSingleAttachment(map: Map.Entry<String,String> ) =  CompletableFuture.supplyAsync { Util.execute(map) }
+    private fun processSingleAttachment(map: Map.Entry<String,String> ) =  CompletableFuture.supplyAsync { execute(map) }
+
+
+    fun execute(map: Map.Entry<String, String>): File {
+        System.out.println("Downloading Resource " + map.key)
+        val `in` = BufferedInputStream(URL(map.key).openStream())
+        val fos = FileOutputStream(map.value)
+        val bout = BufferedOutputStream(fos)
+
+        val data = ByteArray(BUFFER)
+        while( readFile(`in`,data, bout) >= 0);
+
+        bout.close()
+        `in`.close()
+
+        System.out.println("Download Resource " + map.value)
+
+        return File(map.value)
+    }
+
+    private fun readFile(`in`: BufferedInputStream, data :ByteArray, bout : BufferedOutputStream) : Int {
+        val res = `in`.read(data, 0, BUFFER)
+        when {
+            res.isRange() -> bout.write(data, 0, res)
+            else -> { }
+        }
+
+        return res;
+    }
+
+    private fun Int.isRange() = this >= 0
 
 }
