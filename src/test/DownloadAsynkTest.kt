@@ -1,8 +1,6 @@
 
-import map.entry.MapEntry
 import org.junit.Assert
 import org.junit.Assert.fail
-import java.util.*
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -23,13 +21,11 @@ class DownloadAsynkTest {
     @org.junit.Test
     fun testSubmit() {
         val listCompletable = DownloadAsynk.submit(
-           object : HashMap<String, String>() {
-                       init {
-                           put("https://raw.githubusercontent.com/kotlin-es/kotlin-asynk-resources/master/src/main/resource/AeroStar(J)%5B!%5D.zip", "./src/Aero-Star.zip")
-                           put("https://raw.githubusercontent.com/kotlin-es/kotlin-asynk-resources/master/src/main/resource/Alien3(J)%5B!%5D.zip", "Alien-3.zip")
-                           put("https://raw.githubusercontent.com/kotlin-es/kotlin-asynk-resources/master/src/main/resource/SuperMarioLand2-6GoldenCoins(UE)(V1.2)%5B!%5D.zip","Super-Mario-Land-2-6-Golden-Coins.zip")
-                       }
-           }
+           mapOf(
+                   Pair("https://raw.githubusercontent.com/kotlin-es/kotlin-asynk-resources/master/src/main/resource/AeroStar(J)%5B!%5D.zip","./src/Aero-Star.zip"),
+                   Pair("https://raw.githubusercontent.com/kotlin-es/kotlin-asynk-resources/master/src/main/resource/Alien3(J)%5B!%5D.zip", "Alien-3.zip"),
+                   Pair("https://raw.githubusercontent.com/kotlin-es/kotlin-asynk-resources/master/src/main/resource/SuperMarioLand2-6GoldenCoins(UE)(V1.2)%5B!%5D.zip","Super-Mario-Land-2-6-Golden-Coins.zip")
+                )
         )
 
 
@@ -46,32 +42,6 @@ class DownloadAsynkTest {
                 }
             }
         }
-
-        System.out.println("End Test")
-
-        runAsync.get()
-    }
-
-
-    @org.junit.Test
-    fun testSubmit2() {
-        val completable = DownloadAsynk.submit(
-                MapEntry("https://raw.githubusercontent.com/kotlin-es/kotlin-asynk-resources/master/src/main/resource/Alien3(J)%5B!%5D.zip", "Alien-3.zip")
-        )
-
-
-        val runAsync = CompletableFuture.runAsync {
-                try {
-                    val file = completable.get()
-                    val res = file.exists()
-                    System.out.println("Assert " + res.toString())
-                    Assert.assertTrue(res)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    fail()
-                }
-        }
-
 
         System.out.println("End Test")
 

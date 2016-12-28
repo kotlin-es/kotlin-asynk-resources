@@ -7,6 +7,8 @@ import java.net.URL
 import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.Executors
+import java.util.function.Supplier
 
 
 /**
@@ -17,7 +19,9 @@ object DownloadAsynk {
     private val BUFFER = 1024
     private val MILLISECONDS_THREAD_SLEEP  = 100
     private val MILLISECOND_THREAD_SLEEP_TASK_RESOLVED = 25
-    private var queue: ConcurrentLinkedQueue<Map<CompletableFuture<File>, Map.Entry<String,String>>>? = null
+    private var queue: ConcurrentLinkedQueue<Pair<CompletableFuture<File>,Map.Entry<String, String>>>? = null
+
+    val cachedLazyPool by lazy { Executors.newCachedThreadPool() }
 
     init {
         queue = ConcurrentLinkedQueue()
@@ -42,10 +46,8 @@ object DownloadAsynk {
                     val size = _priorityQueue.size
                     for (i in 0..size - 1) {
                         var poll = _priorityQueue.poll()
-                        for(entry in poll.entries){
-                            val res = processSingleAttachment(entry.value)?.get()
-                            entry.key.complete(res)
-                        }
+                        val res = processSingleAttachment(poll.second)?.get()
+                        poll.first.complete(res)
                     }
 
                     try {
@@ -65,11 +67,7 @@ object DownloadAsynk {
 
     fun submit(elem: Map.Entry<String,String>): CompletableFuture<File> {
         val completableFuture = CompletableFuture<File>()
-        val pair = object : HashMap<CompletableFuture<File>, Map.Entry<String,String>>() {
-            init {
-                put(completableFuture, elem)
-            }
-        }
+        var pair = Pair(completableFuture,elem)
         queue?.add(pair)
         return completableFuture
     }
@@ -85,7 +83,7 @@ object DownloadAsynk {
     }
 
 
-    private fun processSingleAttachment(map: Map.Entry<String,String> ) =  CompletableFuture.supplyAsync { execute(map) }
+    private fun processSingleAttachment(map: Map.Entry<String,String> ) =  CompletableFuture.supplyAsync(Supplier { execute(map) } ,cachedLazyPool)
 
 
     fun execute(map: Map.Entry<String, String>): File {
@@ -118,3 +116,4 @@ object DownloadAsynk {
     private fun Int.isRange() = this >= 0
 
 }
+
