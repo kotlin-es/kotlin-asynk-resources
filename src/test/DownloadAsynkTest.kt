@@ -10,11 +10,6 @@ import java.util.concurrent.CompletableFuture
 class DownloadAsynkTest {
 
     @org.junit.Test
-    fun testSubmit() {
-
-    }
-
-    @org.junit.Test
     fun testSubmit1() {
         val listCompletable = DownloadAsynk.create().submit(
            object : HashMap<String, String>() {
