@@ -13,14 +13,7 @@ object DownloadAsynk {
 
     }
 
-    fun submit(pair: Pair<String,String>): CompletableFuture<File> =
-            threadPoll.add ( {
-                System.out.println()
-                System.out.println("************  "+pair.toString())
-               // System.out.println("************  "+it.toString())
-
-                Process.execute(pair)
-            })
+    fun submit(pair: Pair<String,String>): CompletableFuture<File> = threadPoll.add { Process.execute(pair)     }
 
 
 
