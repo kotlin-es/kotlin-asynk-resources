@@ -21,8 +21,8 @@ object DownloadAsynk {
 
     fun submit(pair: Pair<String,String>): CompletableFuture<File> {
         val completableFuture = CompletableFuture<File>()
-        var pair = Pair(completableFuture,pair)
-        thread.add(pair)
+        var _pair = Pair(completableFuture,pair)
+        thread.add(_pair)
         return completableFuture
     }
 

@@ -34,8 +34,8 @@ class CustomExecutor<K,V>(val processSingle : (V) -> CompletableFuture<K> ) {
                         val size = _priorityQueue.size
                         for (i in 0..size - 1) {
                             poll = _priorityQueue.poll()
-                            val res = processSingle(poll!!.second)?.get()
-                            poll!!.first.complete(res)
+                            val res = processSingle(poll!!.second)
+                            poll!!.first.complete(res.get())
                         }
                     }catch(e: Exception){
                         _priorityQueue.add(poll)
@@ -64,4 +64,5 @@ class CustomExecutor<K,V>(val processSingle : (V) -> CompletableFuture<K> ) {
     }
 
     fun add(elem : Pair<CompletableFuture<K>, V>) = queue?.add(elem)
+
 }
