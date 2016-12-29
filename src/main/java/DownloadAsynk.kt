@@ -1,33 +1,32 @@
-
 import java.io.File
 import java.util.*
 import java.util.concurrent.CompletableFuture
-
 
 /**
  * Created by vicboma on 26/12/16.
  */
 object DownloadAsynk {
 
-    val thread by lazy {
-        CustomExecutor<File, Pair<String,String>>({
-            CompletableFuture.supplyAsync({ Process.execute(it) })
-        })
-    }
+    val threadPoll = CustomExecutor<File>()
 
     init {
 
     }
 
-    fun submit(pair: Pair<String,String>): CompletableFuture<File> {
-        val completableFuture = CompletableFuture<File>()
-        var _pair = Pair(completableFuture,pair)
-        thread.add(_pair)
-        return completableFuture
-    }
+    fun submit(pair: Pair<String,String>): CompletableFuture<File> =
+            threadPoll.add ( {
+                System.out.println()
+                System.out.println("************  "+pair.toString())
+               // System.out.println("************  "+it.toString())
+
+                Process.execute(pair)
+            })
+
+
 
     fun submit(vararg pairs : Pair<String, String>): List<CompletableFuture<File>> {
         val listCompletable = ArrayList<CompletableFuture<File>>()
+
         for(it in pairs){
             val res = submit(it)
             listCompletable.add(res)
@@ -35,6 +34,9 @@ object DownloadAsynk {
 
         return listCompletable
     }
+
+
+    //suspend fun <T> coroutine(f:  suspend () -> T): T = suspendCoroutine<T> { f.startCoroutine(it) }
 
 }
 

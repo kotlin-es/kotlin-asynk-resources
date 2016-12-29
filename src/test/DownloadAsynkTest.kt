@@ -34,7 +34,7 @@ class DownloadAsynkTest {
                     val res = file.exists()
                     System.out.println("Assert " + res.toString())
                     Assert.assertTrue(res)
-                } catch (e: Exception) {
+                } catch (e: java.lang.Exception) {
                     e.printStackTrace()
                     fail()
                 }
@@ -59,7 +59,7 @@ class DownloadAsynkTest {
                                     val res = file.exists()
                                     System.out.println("Assert " + res.toString())
                                     Assert.assertTrue(res)
-                                } catch (e: Exception) {
+                                } catch (e: java.lang.Exception) {
                                     e.printStackTrace()
                                     fail()
                                 }

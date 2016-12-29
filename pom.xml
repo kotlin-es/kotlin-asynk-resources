@@ -22,7 +22,7 @@
 
 
     <properties>
-        <kotlin.version>1.0.6</kotlin.version>
+        <kotlin.version>1.1-M04</kotlin.version>
         <junit.version>4.11</junit.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
@@ -42,6 +42,16 @@
         </license>
     </licenses>
 
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>dl</id>
+            <name>bintray</name>
+            <url>http://dl.bintray.com/kotlin/kotlin-eap-1.1</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
@@ -51,12 +61,12 @@
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-reflect</artifactId>
+            <artifactId>kotlin-runtime</artifactId>
             <version>${kotlin.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-runtime</artifactId>
+            <artifactId>kotlin-reflect</artifactId>
             <version>${kotlin.version}</version>
         </dependency>
         <dependency>

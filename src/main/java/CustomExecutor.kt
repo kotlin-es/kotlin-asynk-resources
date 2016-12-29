@@ -1,17 +1,15 @@
 
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ConcurrentLinkedQueue
-
 /**
  * Created by vicboma on 29/12/16.
  */
-class CustomExecutor<K,V>(val processSingle : (V) -> CompletableFuture<K> ) {
+class CustomExecutor<K>{
 
-
-    private val MILLISECONDS_THREAD_SLEEP  = 100
+    private val MILLISECONDS_THREAD_SLEEP  = 75
     private val MILLISECOND_THREAD_SLEEP_TASK_RESOLVED = 25
 
-    private var queue: ConcurrentLinkedQueue<Pair<CompletableFuture<K>, V>>? = null
+    private var queue: ConcurrentLinkedQueue<Pair<CompletableFuture<K>,() -> K >>? = null
 
     val thread by lazy {
 
@@ -29,15 +27,17 @@ class CustomExecutor<K,V>(val processSingle : (V) -> CompletableFuture<K> ) {
                     }
 
                 } else {
-                    var poll : Pair<CompletableFuture<K>, V> ? = null
+                    var poll : Pair<CompletableFuture<K>,() -> K > ? = null
                     try {
-                        val size = _priorityQueue.size
-                        for (i in 0..size - 1) {
-                            poll = _priorityQueue.poll()
-                            val res = processSingle(poll!!.second)
-                            poll!!.first.complete(res.get())
+                        CompletableFuture.runAsync {
+                            val size = _priorityQueue.size
+                            for (i in 0..size - 1) {
+                                poll = _priorityQueue.poll()
+                                val res = poll!!.second.invoke()
+                                poll!!.first.complete(res)
+                            }
                         }
-                    }catch(e: Exception){
+                    } catch(e: java.lang.Exception){
                         _priorityQueue.add(poll)
                     }
                     finally {
@@ -63,6 +63,10 @@ class CustomExecutor<K,V>(val processSingle : (V) -> CompletableFuture<K> ) {
         }
     }
 
-    fun add(elem : Pair<CompletableFuture<K>, V>) = queue?.add(elem)
-
+    fun add(processSingle : () -> K)  : CompletableFuture<K> {
+        val completableFuture = CompletableFuture<K>()
+        var _pair = Pair(completableFuture,processSingle)
+        queue?.add(_pair)
+        return completableFuture
+    }
 }

@@ -13,7 +13,7 @@ class Process {
 
         private val BUFFER = 1024
 
-        fun  execute(pair: Pair<String, String>): File {
+        fun execute(pair: Pair<String, String>): File {
             System.out.println("Downloading Resource " + pair.first)
             val `in` = BufferedInputStream(URL(pair.first).openStream())
             val fos = FileOutputStream(pair.second)
